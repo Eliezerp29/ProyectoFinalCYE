@@ -15,16 +15,13 @@ namespace ProyectoFinal.DataModel.Entities
 
     {
 
-        public Alquiler()
-        {
-            this.Vehiculos = new HashSet<Vehiculo>();
-        }
         [Key]
         public int AlquilerId { get; set; }
-        
+       [Required]
         public int ClienteId { get; set; }
-        
+        [Required]
         public int VehiculoId { get; set; }
+
         [StringLength(50)]
         public string MetodoDePago { get; set; }
         
@@ -44,6 +41,12 @@ namespace ProyectoFinal.DataModel.Entities
 
         public DateTime FechaModificacion { get; set; }
 
-        public ICollection<Vehiculo>Vehiculos { get; set; }
+        public Cliente Cliente { get; set; }
+
+
+        public Vehiculo Vehiculo { get; set; }
+
+
+
     }
 }

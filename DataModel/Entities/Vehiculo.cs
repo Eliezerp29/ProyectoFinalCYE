@@ -8,13 +8,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProyectoFinal.DataModel.Entities
 {
-    [Table("TiposDeVehiculos")]
+    [Table("Vehiculos")]
     public  class Vehiculo
     {
         [Key]
-        public int VehiculoID { get; set; }
+        public int VehiculoId { get; set; }
+      [Required]
         public int TipoTransmisionId { get; set; }
+        [Required]
         public int TipoCombustibleId { get; set; }
+        [Required]
         public int   ModeloId { get; set; }
         [StringLength(100)]
         public string Chasis { get; set; }
@@ -40,6 +43,13 @@ namespace ProyectoFinal.DataModel.Entities
 
         public DateTime FechaModificacion { get; set; }
 
-        public Vehiculo Vehiculos { get; set; }
+        public TipoTransmision TipoTransmision { get; set; }
+
+        public TipoCombustible TipoCombustible { get; set; }
+
+        public Modelo Modelo { get; set; }
+
     }
+
+
 }

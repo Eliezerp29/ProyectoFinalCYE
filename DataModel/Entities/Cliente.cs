@@ -33,6 +33,8 @@ namespace ProyectoFinal.DataModel.Entities
 
         public DateTime FechaModificacion { get; set; }
 
+    
+
 
 
     }

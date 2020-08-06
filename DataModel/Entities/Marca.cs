@@ -12,7 +12,7 @@ namespace ProyectoFinal.DataModel.Entities
     public class Marca
     {
         [Key]
-        public int TipoMarcaId { get; set; }
+        public int MarcaId { get; set; }
         [StringLength(100)]
         public string Nombre { get; set; }
         [StringLength(2)]
@@ -22,5 +22,7 @@ namespace ProyectoFinal.DataModel.Entities
         public DateTime FechaRegistro { get; set; }
 
         public DateTime FechaModificacion { get; set; }
+
+
     }
 }

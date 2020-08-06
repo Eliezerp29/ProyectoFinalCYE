@@ -25,36 +25,11 @@
                         FechaRegistro = c.DateTime(nullable: false),
                         FechaModificacion = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.AlquilerId);
-            
-            CreateTable(
-                "dbo.TiposDeVehiculos",
-                c => new
-                    {
-                        VehiculoID = c.Int(nullable: false, identity: true),
-                        TipoTransmisionId = c.Int(nullable: false),
-                        TipoCombustibleId = c.Int(nullable: false),
-                        ModeloId = c.Int(nullable: false),
-                        Chasis = c.String(maxLength: 100),
-                        Placa = c.String(maxLength: 20),
-                        Anio = c.String(maxLength: 4),
-                        Color = c.String(maxLength: 20),
-                        Cilindraje = c.String(maxLength: 10),
-                        KmenTablero = c.String(maxLength: 50),
-                        CantidadPuertas = c.Int(nullable: false),
-                        Precio = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        Estatus = c.String(),
-                        Borrado = c.Boolean(nullable: false),
-                        FechaRegistro = c.DateTime(nullable: false),
-                        FechaModificacion = c.DateTime(nullable: false),
-                        Vehiculos_VehiculoID = c.Int(),
-                        Alquiler_AlquilerId = c.Int(),
-                    })
-                .PrimaryKey(t => t.VehiculoID)
-                .ForeignKey("dbo.TiposDeVehiculos", t => t.Vehiculos_VehiculoID)
-                .ForeignKey("dbo.Alquiler", t => t.Alquiler_AlquilerId)
-                .Index(t => t.Vehiculos_VehiculoID)
-                .Index(t => t.Alquiler_AlquilerId);
+                .PrimaryKey(t => t.AlquilerId)
+                .ForeignKey("dbo.Clientes", t => t.ClienteId, cascadeDelete: true)
+                .ForeignKey("dbo.Vehiculos", t => t.VehiculoId, cascadeDelete: true)
+                .Index(t => t.ClienteId)
+                .Index(t => t.VehiculoId);
             
             CreateTable(
                 "dbo.Clientes",
@@ -75,17 +50,33 @@
                 .PrimaryKey(t => t.ClienteId);
             
             CreateTable(
-                "dbo.Marcas",
+                "dbo.Vehiculos",
                 c => new
                     {
-                        TipoMarcaId = c.Int(nullable: false, identity: true),
-                        Nombre = c.String(maxLength: 100),
-                        Estatus = c.String(maxLength: 2),
+                        VehiculoId = c.Int(nullable: false, identity: true),
+                        TipoTransmisionId = c.Int(nullable: false),
+                        TipoCombustibleId = c.Int(nullable: false),
+                        ModeloId = c.Int(nullable: false),
+                        Chasis = c.String(maxLength: 100),
+                        Placa = c.String(maxLength: 20),
+                        Anio = c.String(maxLength: 4),
+                        Color = c.String(maxLength: 20),
+                        Cilindraje = c.String(maxLength: 10),
+                        KmenTablero = c.String(maxLength: 50),
+                        CantidadPuertas = c.Int(nullable: false),
+                        Precio = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Estatus = c.String(),
                         Borrado = c.Boolean(nullable: false),
                         FechaRegistro = c.DateTime(nullable: false),
                         FechaModificacion = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.TipoMarcaId);
+                .PrimaryKey(t => t.VehiculoId)
+                .ForeignKey("dbo.Modelos", t => t.ModeloId, cascadeDelete: true)
+                .ForeignKey("dbo.TiposDeCombustibles", t => t.TipoCombustibleId, cascadeDelete: true)
+                .ForeignKey("dbo.TiposDeTransmision", t => t.TipoTransmisionId, cascadeDelete: true)
+                .Index(t => t.TipoTransmisionId)
+                .Index(t => t.TipoCombustibleId)
+                .Index(t => t.ModeloId);
             
             CreateTable(
                 "dbo.Modelos",
@@ -99,7 +90,22 @@
                         FechaRegistro = c.DateTime(nullable: false),
                         FechaModificacion = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.ModeloId);
+                .PrimaryKey(t => t.ModeloId)
+                .ForeignKey("dbo.Marcas", t => t.MarcaId, cascadeDelete: true)
+                .Index(t => t.MarcaId);
+            
+            CreateTable(
+                "dbo.Marcas",
+                c => new
+                    {
+                        MarcaId = c.Int(nullable: false, identity: true),
+                        Nombre = c.String(maxLength: 100),
+                        Estatus = c.String(maxLength: 2),
+                        Borrado = c.Boolean(nullable: false),
+                        FechaRegistro = c.DateTime(nullable: false),
+                        FechaModificacion = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.MarcaId);
             
             CreateTable(
                 "dbo.TiposDeCombustibles",
@@ -131,16 +137,24 @@
         
         public override void Down()
         {
-            DropForeignKey("dbo.TiposDeVehiculos", "Alquiler_AlquilerId", "dbo.Alquiler");
-            DropForeignKey("dbo.TiposDeVehiculos", "Vehiculos_VehiculoID", "dbo.TiposDeVehiculos");
-            DropIndex("dbo.TiposDeVehiculos", new[] { "Alquiler_AlquilerId" });
-            DropIndex("dbo.TiposDeVehiculos", new[] { "Vehiculos_VehiculoID" });
+            DropForeignKey("dbo.Alquiler", "VehiculoId", "dbo.Vehiculos");
+            DropForeignKey("dbo.Vehiculos", "TipoTransmisionId", "dbo.TiposDeTransmision");
+            DropForeignKey("dbo.Vehiculos", "TipoCombustibleId", "dbo.TiposDeCombustibles");
+            DropForeignKey("dbo.Vehiculos", "ModeloId", "dbo.Modelos");
+            DropForeignKey("dbo.Modelos", "MarcaId", "dbo.Marcas");
+            DropForeignKey("dbo.Alquiler", "ClienteId", "dbo.Clientes");
+            DropIndex("dbo.Modelos", new[] { "MarcaId" });
+            DropIndex("dbo.Vehiculos", new[] { "ModeloId" });
+            DropIndex("dbo.Vehiculos", new[] { "TipoCombustibleId" });
+            DropIndex("dbo.Vehiculos", new[] { "TipoTransmisionId" });
+            DropIndex("dbo.Alquiler", new[] { "VehiculoId" });
+            DropIndex("dbo.Alquiler", new[] { "ClienteId" });
             DropTable("dbo.TiposDeTransmision");
             DropTable("dbo.TiposDeCombustibles");
-            DropTable("dbo.Modelos");
             DropTable("dbo.Marcas");
+            DropTable("dbo.Modelos");
+            DropTable("dbo.Vehiculos");
             DropTable("dbo.Clientes");
-            DropTable("dbo.TiposDeVehiculos");
             DropTable("dbo.Alquiler");
         }
     }

@@ -22,5 +22,7 @@ namespace ProyectoFinal.DataModel.Entities
         public DateTime FechaRegistro { get; set; }
 
         public DateTime FechaModificacion { get; set; }
+
+       
     }
 }
